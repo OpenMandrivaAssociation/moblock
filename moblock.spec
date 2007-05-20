@@ -1,6 +1,6 @@
 Name:           moblock
 Version:        0.8
-Release:        %mkrel 3
+Release:        %mkrel 4
 Epoch:          0
 Summary:        Block connections from/to hosts listed in a file in peerguardian format
 License:        GPL
@@ -9,8 +9,7 @@ URL:            http://moblock.berlios.de/
 # cvs -d:pserver:anonymous@cvs.moblock.berlios.de:/cvsroot/moblock login
 # cvs -z3 -d:pserver:anonymous@cvs.moblock.berlios.de:/cvsroot/moblock co moblock
 Source0:        %{name}-%{version}.tar.bz2
-# http://www.saunalahti.fi/~zolord/bluetack
-Source1:        %{name}-blocklists.tar.bz2
+Source1:        %{name}-blocklists-lists.blocklist.org-20060318.tar.bz2
 Source2:        %{name}.init
 Source3:        %{name}.cron
 Source4:        %{name}-start
