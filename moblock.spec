@@ -1,6 +1,8 @@
+%define blocklist guarding.p2b
+
 Name:           moblock
 Version:        0.8
-Release:        %mkrel 4
+Release:        %mkrel 5
 Epoch:          0
 Summary:        Block connections from/to hosts listed in a file in peerguardian format
 License:        GPL
@@ -57,7 +59,7 @@ usage.
 %{__install} -m 644 blocklists/* %{buildroot}%{_var}/spool/%{name}
 
 %{__mkdir_p} %{buildroot}%{_sysconfdir}
-%{__cat} %{buildroot}%{_var}/spool/%{name}/* > %{buildroot}%{_sysconfdir}/guarding.p2p
+%{__cat} %{buildroot}%{_var}/spool/%{name}/* > %{buildroot}%{_sysconfdir}/%{blocklist}
 
 %{__mkdir_p} %{buildroot}%{_sysconfdir}/cron.daily
 %{__install} -m 755 %{SOURCE3} %{buildroot}%{_sysconfdir}/cron.daily/%{name}.cron
@@ -94,7 +96,7 @@ usage.
 %attr(0755,root,root) /sbin/%{name}-stop
 %attr(0755,root,root) %{_initrddir}/%{name}
 %{_mandir}/man1/%{name}.1*
-%config(noreplace) %{_sysconfdir}/guarding.p2p
+%config(noreplace) %{_sysconfdir}/%{blocklist}
 %dir %{_var}/spool/%{name}
 %config(noreplace) %{_var}/spool/%{name}/*
 %attr(0755,root,root) %{_sysconfdir}/cron.daily/%{name}.cron
@@ -102,5 +104,3 @@ usage.
 %ghost %attr(0600,root,root) %{_logdir}/MoBlock.stats
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
-
-
