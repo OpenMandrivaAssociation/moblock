@@ -2,7 +2,7 @@
 
 Name:           moblock
 Version:        0.8
-Release:        %mkrel 5
+Release:        %mkrel 6
 Epoch:          0
 Summary:        Block connections from/to hosts listed in a file in peerguardian format
 License:        GPL
