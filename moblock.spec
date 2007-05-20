@@ -59,7 +59,18 @@ usage.
 %{__install} -m 644 blocklists/* %{buildroot}%{_var}/spool/%{name}
 
 %{__mkdir_p} %{buildroot}%{_sysconfdir}
-%{__cat} %{buildroot}%{_var}/spool/%{name}/* > %{buildroot}%{_sysconfdir}/%{blocklist}
+
+> %{buildroot}%{_sysconfdir}/%{blocklist}
+for list in %{buildroot}%{_var}/spool/%{name}/*; do
+    case "$list" in
+    *\.gz)
+        /bin/zcat "$list" >> %{buildroot}%{_sysconfdir}/%{blocklist}
+        ;;
+    *\.txt)
+        %{__cat} "$list" >> %{buildroot}%{_sysconfdir}/%{blocklist}
+        ;;
+    esac
+done
 
 %{__mkdir_p} %{buildroot}%{_sysconfdir}/cron.daily
 %{__install} -m 755 %{SOURCE3} %{buildroot}%{_sysconfdir}/cron.daily/%{name}.cron
