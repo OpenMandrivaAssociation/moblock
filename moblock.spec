@@ -2,7 +2,7 @@
 
 Name:           moblock
 Version:        0.8
-Release:        %mkrel 6
+Release:        %mkrel 7
 Epoch:          0
 Summary:        Block connections from/to hosts listed in a file in peerguardian format
 License:        GPL
@@ -19,14 +19,17 @@ Source5:        %{name}-stop
 Source6:        %{name}.logrotate
 Source7:        %{name}.sysconfig
 Source8:        %{name}.man
-Requires:       gzip
 Requires:       iptables
+Requires:       listtools
+Requires:       p7zip
 Requires(post): rpm-helper
 Requires(preun): rpm-helper
 Requires:       wget
 BuildRequires:  iptables-devel
 BuildRequires:  libnetfilter_queue-devel
 BuildRequires:  libnfnetlink-devel
+BuildRequires:  listtools
+BuildRequires:  p7zip
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
@@ -48,45 +51,54 @@ usage.
 %{__rm} -rf %{buildroot}
 
 %{__mkdir_p} %{buildroot}/sbin
-%{__install} -m 755 moblock %{buildroot}/sbin/%{name}
-%{__install} -m 755 %{SOURCE4} %{buildroot}/sbin/moblock-start
-%{__install} -m 755 %{SOURCE5} %{buildroot}/sbin/moblock-stop
+%{__cp} -a moblock %{buildroot}/sbin/%{name}
+%{__cp} -a %{SOURCE4} %{buildroot}/sbin/moblock-start
+%{__cp} -a %{SOURCE5} %{buildroot}/sbin/moblock-stop
 
 %{__mkdir_p} %{buildroot}%{_initrddir}
-%{__install} -m 755 %{SOURCE2} %{buildroot}%{_initrddir}/%{name}
+%{__cp} -a %{SOURCE2} %{buildroot}%{_initrddir}/%{name}
 
 %{__mkdir_p} %{buildroot}%{_var}/spool/%{name}
-%{__install} -m 644 blocklists/* %{buildroot}%{_var}/spool/%{name}
+%{__cp} -a blocklists/* %{buildroot}%{_var}/spool/%{name}
 
 %{__mkdir_p} %{buildroot}%{_sysconfdir}
 
-> %{buildroot}%{_sysconfdir}/%{blocklist}
-for list in %{buildroot}%{_var}/spool/%{name}/*; do
-    case "$list" in
-    *\.gz)
-        /bin/zcat "$list" >> %{buildroot}%{_sysconfdir}/%{blocklist}
-        ;;
-    *\.txt)
-        %{__cat} "$list" >> %{buildroot}%{_sysconfdir}/%{blocklist}
-        ;;
-    esac
+pushd %{buildroot}%{_var}/spool/%{name} >/dev/null
+for i in *.7z; do
+    %{_bindir}/7za x -o. $i >/dev/null 2>&1
 done
+popd >/dev/null
+pushd %{buildroot}%{_var}/spool/%{name}/allow >/dev/null
+for i in *.7z; do
+    %{_bindir}/7za x -o. $i >/dev/null 2>&1
+done
+popd >/dev/null
+BLOCKLIST_LOCAL=
+for i in %{buildroot}%{_var}/spool/%{name}/*.p2b; do
+    BLOCKLIST_LOCAL="$BLOCKLIST_LOCAL $i"
+done
+ALLOWLIST_LOCAL=
+for i in %{buildroot}%{_var}/spool/%{name}/allow/*.p2b; do
+    ALLOWLIST_LOCAL="$ALLOWLIST_LOCAL -$i"
+done
+%{_bindir}/mergep2p -p2b2 -o %{buildroot}%{_sysconfdir}/%{blocklist} $BLOCKLIST_LOCAL $ALLOWLIST_LOCAL
+%{_bindir}/find %{buildroot}%{_var}/spool/%{name} -type f ! -name '*.7z' | %{_bindir}/xargs %{__rm}
 
 %{__mkdir_p} %{buildroot}%{_sysconfdir}/cron.daily
-%{__install} -m 755 %{SOURCE3} %{buildroot}%{_sysconfdir}/cron.daily/%{name}.cron
+%{__cp} -a %{SOURCE3} %{buildroot}%{_sysconfdir}/cron.daily/%{name}.cron
 
 %{__mkdir_p} %{buildroot}%{_logdir}
 /bin/touch %{buildroot}%{_logdir}/%{name}.log
 /bin/touch %{buildroot}%{_logdir}/MoBlock.stats
 
 %{__mkdir_p} %{buildroot}%{_sysconfdir}/logrotate.d
-%{__install} -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
+%{__cp} -a %{SOURCE6} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
 
 %{__mkdir_p} %{buildroot}%{_sysconfdir}/sysconfig
-%{__install} -m 644 %{SOURCE7} %{buildroot}%{_sysconfdir}/sysconfig/%{name}
+%{__cp} -a %{SOURCE7} %{buildroot}%{_sysconfdir}/sysconfig/%{name}
 
 %{__mkdir_p} %{buildroot}%{_mandir}/man1
-%{__install} -m 644 %{SOURCE8} %{buildroot}%{_mandir}/man1/%{name}.1
+%{__cp} -a %{SOURCE8} %{buildroot}%{_mandir}/man1/%{name}.1
 
 %clean
 %{__rm} -rf %{buildroot}
