@@ -2,7 +2,7 @@
 
 Name:           moblock
 Version:        0.8
-Release:        %mkrel 7
+Release:        %mkrel 8
 Epoch:          0
 Summary:        Block connections from/to hosts listed in a file in peerguardian format
 License:        GPL
@@ -19,6 +19,7 @@ Source5:        %{name}-stop
 Source6:        %{name}.logrotate
 Source7:        %{name}.sysconfig
 Source8:        %{name}.man
+Patch0:         %{name}-0.8-pg2.patch
 Requires:       iptables
 Requires:       listtools
 Requires:       p7zip
@@ -41,6 +42,7 @@ usage.
 
 %prep
 %setup -q -n %{name}
+%patch0 -p1
 %setup -q -n %{name} -T -D -a 1
 
 %build
