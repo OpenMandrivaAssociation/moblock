@@ -2,7 +2,7 @@
 
 Name:           moblock
 Version:        0.8
-Release:        %mkrel 12
+Release:        %mkrel 13
 Epoch:          0
 Summary:        Block connections from/to hosts listed in a file in peerguardian format
 License:        GPL
@@ -26,7 +26,6 @@ Requires:       p7zip
 Requires(post): rpm-helper
 Requires(preun): rpm-helper
 Requires:       wget
-BuildRequires:  iptables-devel
 BuildRequires:  libnetfilter_queue-devel
 BuildRequires:  libnfnetlink-devel
 BuildRequires:  listtools
