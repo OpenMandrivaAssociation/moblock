@@ -1,8 +1,8 @@
-%define blocklist guarding.p2b
+%define blocklist guarding.p2p
 
 Name:           moblock
 Version:        0.8
-Release:        %mkrel 14
+Release:        %mkrel 15
 Epoch:          0
 Summary:        Block connections from/to hosts listed in a file in peerguardian format
 License:        GPL
@@ -11,7 +11,7 @@ URL:            http://moblock.berlios.de/
 # cvs -d:pserver:anonymous@cvs.moblock.berlios.de:/cvsroot/moblock login
 # cvs -z3 -d:pserver:anonymous@cvs.moblock.berlios.de:/cvsroot/moblock co moblock
 Source0:        %{name}-%{version}.tar.bz2
-Source1:        %{name}-blocklists-lists.blocklist.org-20060318.tar.bz2
+Source1:        %{name}-blocklists-peerguardian.sourceforge.net-20071211.tar
 Source2:        %{name}.init
 Source3:        %{name}.cron
 Source4:        %{name}-start
@@ -20,6 +20,7 @@ Source6:        %{name}.logrotate
 Source7:        %{name}.sysconfig
 Source8:        %{name}.man
 Patch0:         %{name}-0.8-pg2.patch
+Patch1:         %{name}-0.8-nfq_unbind_pf.patch
 Requires:       iptables
 Requires:       listtools
 Requires:       p7zip
@@ -42,6 +43,7 @@ usage.
 %prep
 %setup -q -n %{name}
 %patch0 -p1
+%patch1 -p1
 %setup -q -n %{name} -T -D -a 1
 
 %build
@@ -75,14 +77,14 @@ for i in *.7z; do
 done
 popd >/dev/null
 BLOCKLIST_LOCAL=
-for i in %{buildroot}%{_var}/spool/%{name}/*.p2b; do
+for i in %{buildroot}%{_var}/spool/%{name}/*.txt; do
     BLOCKLIST_LOCAL="$BLOCKLIST_LOCAL $i"
 done
 ALLOWLIST_LOCAL=
-for i in %{buildroot}%{_var}/spool/%{name}/allow/*.p2b; do
+for i in %{buildroot}%{_var}/spool/%{name}/allow/*.txt; do
     ALLOWLIST_LOCAL="$ALLOWLIST_LOCAL -$i"
 done
-%{_bindir}/mergep2p -p2b2 -o %{buildroot}%{_sysconfdir}/%{blocklist} $BLOCKLIST_LOCAL $ALLOWLIST_LOCAL
+%{_bindir}/mergep2p -p2p -o %{buildroot}%{_sysconfdir}/%{blocklist} $BLOCKLIST_LOCAL $ALLOWLIST_LOCAL
 %{_bindir}/find %{buildroot}%{_var}/spool/%{name} -type f ! -name '*.7z' | %{_bindir}/xargs %{__rm}
 
 %{__mkdir_p} %{buildroot}%{_sysconfdir}/cron.daily
