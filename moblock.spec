@@ -27,8 +27,8 @@ Requires:       p7zip
 Requires(post): rpm-helper
 Requires(preun): rpm-helper
 Requires:       wget
-BuildRequires:  libnetfilter_queue-devel
-BuildRequires:  libnfnetlink-devel
+BuildRequires:  netfilter_queue-devel
+BuildRequires:  nfnetlink-devel
 BuildRequires:  listtools
 BuildRequires:  p7zip
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
