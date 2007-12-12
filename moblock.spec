@@ -1,8 +1,8 @@
-%define blocklist guarding.p2p
+%define blocklist p2p.p2b
 
 Name:           moblock
 Version:        0.8
-Release:        %mkrel 16
+Release:        %mkrel 17
 Epoch:          0
 Summary:        Block connections from/to hosts listed in a file in peerguardian format
 License:        GPL
@@ -84,7 +84,7 @@ ALLOWLIST_LOCAL=
 for i in %{buildroot}%{_var}/spool/%{name}/allow/*.txt; do
     ALLOWLIST_LOCAL="$ALLOWLIST_LOCAL -$i"
 done
-%{_bindir}/mergep2p -p2p -o %{buildroot}%{_sysconfdir}/%{blocklist} $BLOCKLIST_LOCAL $ALLOWLIST_LOCAL
+%{_bindir}/mergep2p -p2b -o %{buildroot}%{_sysconfdir}/%{blocklist} $BLOCKLIST_LOCAL $ALLOWLIST_LOCAL
 %{_bindir}/find %{buildroot}%{_var}/spool/%{name} -type f ! -name '*.7z' | %{_bindir}/xargs %{__rm}
 
 %{__mkdir_p} %{buildroot}%{_sysconfdir}/cron.daily
