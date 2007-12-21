@@ -31,6 +31,7 @@ BuildRequires:  netfilter_queue-devel
 BuildRequires:  nfnetlink-devel
 BuildRequires:  listtools
 BuildRequires:  p7zip
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
 MoBlock is a linux console application that blocks connections from/to hosts
