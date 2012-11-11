@@ -1,0 +1,12 @@
+diff -urNad moblock-0.8~/MoBlock.c moblock-0.8/MoBlock.c
+--- moblock-0.8~/MoBlock.c	2007-10-15 20:45:14.000000000 +0200
++++ moblock-0.8/MoBlock.c	2007-11-17 22:08:25.000000000 +0100
+@@ -502,7 +502,7 @@
+ 
+ 	if (nfq_unbind_pf(h, AF_INET) < 0) {
+ 		fprintf(logfile, "error during nfq_unbind_pf()\n");
+-		exit(-1);
++		//exit(-1);
+ 	}
+ 
+ 	if (nfq_bind_pf(h, AF_INET) < 0) {

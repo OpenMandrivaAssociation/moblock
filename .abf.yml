@@ -1,0 +1,10 @@
+sources:
+  "moblock-0.8.tar.bz2:"	e451aaf47d30002104e474369ede3dd26287276e
+  "moblock-blocklists-peerguardian.sourceforge.net-20071211.tar:"	661f08d41f2522b446b6ea68412b736733178cb1
+  "moblock.cron:"	08fd2177af96e0bd34290d5e5061badd875811d0
+  "moblock.init:"	6f7153d583a4dcd900c489d28dad7c1d2c221f1f
+  "moblock.logrotate:"	d12edc4b095e67776e70d57ef555982613ab9a9c
+  "moblock.man:"	6da99497439f6d5c341aa06aae1ad802c50d0f6c
+  "moblock-start:"	4d32d21f11fd3a69380381aab7bf99fa554cd4d8
+  "moblock-stop:"	5df23d7854a027f6a1b1230a635e7c3155379296
+  "moblock.sysconfig:"	a54f559cfaae8ae55a3036b744dd225dac1f6db5

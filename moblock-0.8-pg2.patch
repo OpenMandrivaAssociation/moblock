@@ -1,0 +1,115 @@
+--- moblock/MoBlock.c.orig	2007-05-22 10:09:24.000000000 +0200
++++ moblock/MoBlock.c	2007-05-22 10:57:41.000000000 +0200
+@@ -220,10 +220,12 @@
+ void loadlist_pg2(char *filename)		// experimental, no check for list sanity
+ {
+     FILE *fp;
+-    int i,retval,ntot=0;
++    int i,retval=0,ntot=0;
+     char name[100],ipmin[16];			// hope we don't have a list with longer names...
+     uint32_t start_ip, end_ip;
+     struct in_addr startaddr,endaddr;
++    int c;
++    size_t s;
+ 
+     fp=fopen(filename,"r");
+     if ( fp == NULL ) {
+@@ -231,12 +233,63 @@
+         exit(-1);
+     }
+ 
+-    fgetc(fp);					// skip first 4 bytes, don't know what they are
+-    fgetc(fp);
+-    fgetc(fp);
+-    retval=fgetc(fp);
++    c=fgetc(fp);					// skip first 4 bytes, don't know what they are
++    if ( c != 0xff ) {
++        fprintf(logfile,"Byte 1: 0x%x != 0xff, aborting...\n", c);
++        fclose(fp);
++        exit(-1);
++    }
++
++    c=fgetc(fp);
++    if ( c != 0xff ) {
++        fprintf(logfile,"Byte 2: 0x%x != 0xff, aborting...\n", c);
++        fclose(fp);
++        exit(-1);
++    }
++
++    c=fgetc(fp);
++    if ( c != 0xff ) {
++        fprintf(logfile,"Byte 3: 0x%x != 0xff, aborting...\n", c);
++        fclose(fp);
++        exit(-1);
++    }
++
++    c=fgetc(fp);
++    if ( c != 0xff ) {
++        fprintf(logfile,"Byte 4: 0x%x != 0xff, aborting...\n", c);
++        fclose(fp);
++        exit(-1);
++    }
++
++    c=fgetc(fp);
++    if ( c != 'P' ) {
++        fprintf(logfile,"Byte 5: %c != P, aborting...\n", c);
++        fclose(fp);
++        exit(-1);
++    }
++
++    c=fgetc(fp);
++    if ( c != '2' ) {
++        fprintf(logfile,"Byte 6: %c != 2, aborting...\n", c);
++        fclose(fp);
++        exit(-1);
++    }
++
++    c=fgetc(fp);
++    if ( c != 'B' ) {
++        fprintf(logfile,"Byte 7: %c != B, aborting...\n", c);
++        fclose(fp);
++        exit(-1);
++    }
++
++    c=fgetc(fp);
++    if ( c != 0x02 ) {
++        fprintf(logfile,"Byte 8: version: %d != 2, aborting...\n", c);
++        fclose(fp);
++        exit(-1);
++    }
+ 
+-    while ( retval != EOF ) {
++    do {
+         i=0;
+         do {
+             name[i]=fgetc(fp);
+@@ -244,8 +297,18 @@
+         } while ( name[i-1] != 0x00 && name[i-1] != EOF);
+         if ( name[i-1] != EOF ) {
+             name[i-1]='\0';
+-            fread(&start_ip,4,1,fp);
+-            fread(&end_ip,4,1,fp);
++            s=fread(&start_ip,4,1,fp);
++            if ( s != 1 ) {
++                fprintf(logfile,"Failed to read start IP: %d != 1, aborting...\n", (int)s);
++                fclose(fp);
++                exit(-1);
++            }
++            s=fread(&end_ip,4,1,fp);
++            if ( s != 1 ) {
++                fprintf(logfile,"Failed to read end IP: %d != 1, aborting...\n", (int)s);
++                fclose(fp);
++                exit(-1);
++            }
+             startaddr.s_addr=start_ip;
+             endaddr.s_addr=end_ip;
+             strcpy(ipmin,inet_ntoa(startaddr));
+@@ -255,7 +318,7 @@
+         else {
+             retval=EOF;
+         }
+-    }
++    } while ( retval != EOF );
+     fclose(fp);
+     fprintf(logfile,"Ranges loaded: %d\n",ntot);
+ 	printf("* Ranges loaded: %d\n",ntot);
