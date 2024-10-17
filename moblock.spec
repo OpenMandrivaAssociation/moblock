@@ -7,7 +7,7 @@ Epoch:          0
 Summary:        Block connections from/to hosts listed in a file in peerguardian format
 License:        GPL
 Group:          System/Servers
-URL:            http://moblock.berlios.de/
+URL:            https://moblock.berlios.de/
 # cvs -d:pserver:anonymous@cvs.moblock.berlios.de:/cvsroot/moblock login
 # cvs -z3 -d:pserver:anonymous@cvs.moblock.berlios.de:/cvsroot/moblock co moblock
 Source0:        %{name}-%{version}.tar.bz2
